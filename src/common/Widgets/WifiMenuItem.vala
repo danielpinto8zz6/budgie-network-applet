@@ -16,43 +16,27 @@
  */
 
 public class Network.WifiMenuItem : Gtk.ListBoxRow {
-    private List<NM.AccessPoint> _ap;
     public signal void user_action ();
-    public GLib.Bytes ssid {
-        get {
-            return _tmp_ap.get_ssid ();
-        }
-    }
+    public Network.State state { get; set; default = Network.State.DISCONNECTED; }
+    public GLib.Bytes ssid { get; construct; }
+    public uint8 strength { get; private set; default = 0; }
 
-    public Network.State state { get; set; default=Network.State.DISCONNECTED; }
-
-    public uint8 strength {
-        get {
-            uint8 strength = 0;
-            foreach (var ap in _ap) {
-                strength = uint8.max (strength, ap.get_strength ());
-            }
-            return strength;
-        }
-    }
-
-    public NM.AccessPoint ap { get { return _tmp_ap; } }
-    NM.AccessPoint _tmp_ap;
+    private Gee.LinkedList<NM.AccessPoint> all_aps;
 
     Gtk.RadioButton radio_button;
     Gtk.Image img_strength;
     Gtk.Image lock_img;
     Gtk.Image error_img;
     Gtk.Spinner spinner;
+    uint refresh_source = 0;
 
-    public WifiMenuItem (NM.AccessPoint ap, WifiMenuItem? previous = null) {
+    construct {
+        all_aps = new Gee.LinkedList<NM.AccessPoint> ();
+        get_style_context ().add_class ("menuitem");
+
         radio_button = new Gtk.RadioButton (null);
         radio_button.hexpand = true;
         radio_button.margin_start = 6;
-
-        if (previous != null) {
-            radio_button.set_group (previous.get_group ());
-        }
 
         img_strength = new Gtk.Image ();
         img_strength.icon_size = Gtk.IconSize.MENU;
@@ -62,12 +46,12 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
 
         /* TODO: investigate this, it has not been tested yet. */
         error_img = new Gtk.Image.from_icon_name ("process-error-symbolic", Gtk.IconSize.MENU);
-        error_img.set_tooltip_text (_("This wireless network could not be connected to."));
+        error_img.tooltip_text = _("This wireless network could not be connected to.");
 
-        spinner = new Gtk.Spinner ();
+        spinner = new Gtk.Spinner();
         spinner.start ();
         spinner.visible = false;
-        spinner.no_show_all = !spinner.visible;
+        spinner.no_show_all = true;
 
         var grid = new Gtk.Grid ();
         grid.column_spacing = 6;
@@ -77,66 +61,110 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
         grid.add (lock_img);
         grid.add (img_strength);
 
-        _ap = new List<NM.AccessPoint> ();
-
-        /* Adding the access point triggers update */
-        add_ap (ap);
+        add (grid);
 
         notify["state"].connect (update);
         radio_button.notify["active"].connect (update);
-
-        radio_button.button_release_event.connect ((b, ev) => {
+        button_release_event.connect (() => { activate (); });
+        activate.connect (() => {
             user_action ();
-            return false;
         });
 
-        add (grid);
+        map.connect (() => start_refresh ());
+        unmap.connect (() => stop_refresh ());
+    }
 
-        this.get_style_context ().add_class ("menuitem");
+    public WifiMenuItem (NM.AccessPoint ap, WifiMenuItem? previous = null) {
+        Object (ssid: ap.ssid);
+        add_ap (ap);
+
+        if (previous != null) {
+            radio_button.set_group (previous.radio_button.get_group ());
+        }
+        
+        show_all ();
     }
 
     /**
      * Only used for an item which is not displayed: hacky way to have no radio button selected.
      **/
     public WifiMenuItem.blank () {
-        radio_button = new Gtk.RadioButton (null);
-    }
-
-    void update_tmp_ap () {
-        uint8 strength = 0;
-        foreach (var ap in _ap) {
-            _tmp_ap = strength > ap.get_strength () ? _tmp_ap : ap;
-            strength = uint8.max (strength, ap.get_strength ());
-        }
+        get_child ().destroy ();
     }
 
     public void set_active (bool active) {
-        radio_button.set_active (active);
+        radio_button.active = active;
     }
 
-    unowned SList get_group () {
-        return radio_button.get_group ();
+    public void add_ap (NM.AccessPoint ap) {
+        lock (all_aps) {
+            all_aps.add (ap);
+        }
+
+        update ();
+    }
+
+    public bool remove_ap (NM.AccessPoint ap) {
+        lock (all_aps) {
+            all_aps.remove (ap);
+            return !all_aps.is_empty;
+        }
+    }
+
+    public NM.AccessPoint get_nearest_ap () {
+        lock (all_aps) {
+            NM.AccessPoint ap = all_aps.first ();
+            foreach (var iter_ap in all_aps) {
+                if (ap.strength < iter_ap.strength) {
+                    ap = iter_ap;
+                }
+            }
+
+            return ap;
+        }
+    }
+
+    private void start_refresh () {
+        lock (refresh_source) {
+            if (refresh_source > 0) {
+                GLib.Source.remove (refresh_source);
+            }
+
+            refresh_source = GLib.Timeout.add_seconds (5, () => {
+                update ();
+                return GLib.Source.CONTINUE;
+            });
+        }
+    }
+
+    private void stop_refresh () {
+        lock (refresh_source) {
+            GLib.Source.remove (refresh_source);
+            refresh_source = 0;
+        }
     }
 
     private void update () {
-        radio_button.label = NM.Utils.ssid_to_utf8 (ap.get_ssid ().get_data ());
+        radio_button.label = NM.Utils.ssid_to_utf8 (ssid.get_data ());
 
-        img_strength.icon_name = get_strength_symbolic_icon ();
-        img_strength.show_all ();
+        NM.AccessPoint ap = null;
+        lock (all_aps) {
+            ap = all_aps.first ();
+        }
 
-        var flags = ap.get_wpa_flags ();
+        NM.@80211ApSecurityFlags flags = ap.wpa_flags;
         var is_secured = false;
 
-        if ((flags & NM.@80211ApSecurityFlags.GROUP_WEP40) != 0) {
+        if (NM.@80211ApSecurityFlags.GROUP_WEP40 in flags) {
             is_secured = true;
             tooltip_text = _("This network uses 40/64-bit WEP encryption");
-        } else if ((flags & NM.@80211ApSecurityFlags.GROUP_WEP104) != 0) {
+        } else if (NM.@80211ApSecurityFlags.GROUP_WEP104 in flags) {
             is_secured = true;
             tooltip_text = _("This network uses 104/128-bit WEP encryption");
-        } else if ((flags & NM.@80211ApSecurityFlags.KEY_MGMT_PSK) != 0) {
+        } else if (NM.@80211ApSecurityFlags.KEY_MGMT_PSK in flags)  {
             is_secured = true;
             tooltip_text = _("This network uses WPA encryption");
-        } else if (flags != NM.@80211ApSecurityFlags.NONE || ap.get_rsn_flags () != NM.@80211ApSecurityFlags.NONE) {
+        } else if (flags != NM.@80211ApSecurityFlags.NONE || ap.rsn_flags != NM.@80211ApSecurityFlags.NONE) {
             is_secured = true;
             tooltip_text = _("This network uses encryption");
         } else {
@@ -150,38 +178,42 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
         hide_item (spinner);
 
         switch (state) {
-        case State.FAILED_WIFI:
-            show_item (error_img);
-            break;
-        case State.CONNECTING_WIFI:
-            show_item (spinner);
-            if (!radio_button.active) {
-                critical ("An access point is being connected but not active.");
-            }
-            break;
+            case State.FAILED_WIFI:
+                show_item (error_img);
+                break;
+            case State.CONNECTING_WIFI:
+                show_item (spinner);
+                if (!radio_button.active) {
+                    critical ("An access point is being connected but not active.");
+                }
+                break;
         }
+
+        // Recalculate global strength
+        uint8 next_strength = 0;
+        lock (all_aps) {
+            foreach (var iter_ap in all_aps) {
+                next_strength = uint8.max (next_strength, iter_ap.strength);
+            }
+        }
+
+        strength = next_strength;
+        img_strength.icon_name = get_strength_symbolic_icon ();
     }
 
-    void show_item (Gtk.Widget w) {
+    private void show_item (Gtk.Widget w) {
         w.visible = true;
         w.no_show_all = !w.visible;
     }
 
-    void hide_item (Gtk.Widget w) {
+    private void hide_item (Gtk.Widget w) {
         w.visible = false;
         w.no_show_all = !w.visible;
         w.hide ();
     }
 
-    public void add_ap (NM.AccessPoint ap) {
-        _ap.append (ap);
-        update_tmp_ap ();
-
-        update ();
-    }
-
-    private const string BASE_ICON_NAME = "network-wireless-signal-";
-    private const string SYMBOLIC = "-symbolic";
+    const string BASE_ICON_NAME = "network-wireless-signal-";
+    const string SYMBOLIC = "-symbolic";
     private unowned string get_strength_symbolic_icon () {
         if (strength < 30) {
             return BASE_ICON_NAME + "weak" + SYMBOLIC;
@@ -192,11 +224,5 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
         } else {
             return BASE_ICON_NAME + "excellent" + SYMBOLIC;
         }
-    }
-
-    public bool remove_ap (NM.AccessPoint ap) {
-        _ap.remove (ap);
-        update_tmp_ap ();
-        return _ap.length () > 0;
     }
 }
