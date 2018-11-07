@@ -95,8 +95,7 @@ namespace Network {
             network_monitor.network_changed.connect ((availabe) => {  
                 if (network_monitor.get_connectivity () == NetworkConnectivity.FULL || network_monitor.get_connectivity () == NetworkConnectivity.PORTAL) {
                     try {
-                        var appinfo = AppInfo.create_from_commandline ("io.elementary.capnet-assist", null, AppInfoCreateFlags.NONE);
-                        appinfo.launch (null, null);
+                        AppInfo.launch_default_for_uri ("https://google.com", null);
                     } catch (Error e) {
                         warning ("%s\n", e.message);
                     }
