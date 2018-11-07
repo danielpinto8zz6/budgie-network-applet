@@ -25,6 +25,9 @@ Run `meson` to configure the build environment and then `ninja` to build
 To install, use `ninja install`
 
     sudo ninja install
+    
+### Arch
+you can install that applet on archlinux with aur : [budgie-network-applet](https://aur.archlinux.org/packages/budgie-network-applet)
 
 ## Donation
 
