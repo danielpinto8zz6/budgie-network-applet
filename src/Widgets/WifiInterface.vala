@@ -18,7 +18,7 @@
 
 public class Network.WifiInterface : Network.AbstractWifiInterface {
     public bool hidden_sensitivity { get; set; default = true; }
-    Wingpanel.Widgets.Switch wifi_item;
+    Network.Widgets.Switch wifi_item;
     Gtk.Revealer revealer;
 
     Cancellable wifi_scan_cancellable = new Cancellable ();
@@ -42,7 +42,7 @@ public class Network.WifiInterface : Network.AbstractWifiInterface {
 
     construct {
         orientation = Gtk.Orientation.VERTICAL;
-        wifi_item = new Wingpanel.Widgets.Switch ("");
+        wifi_item = new Network.Widgets.Switch ("");
         wifi_item.get_style_context ().add_class ("h4");
         pack_start (wifi_item);
 

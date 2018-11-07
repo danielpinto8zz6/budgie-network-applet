@@ -33,7 +33,7 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
     construct {
         image = new Gtk.Image ();
         image.icon_name = "network-wired-symbolic";
-        image.icon_size = Gtk.IconSize.LARGE_TOOLBAR;
+        image.icon_size = Gtk.IconSize.MENU;
 
         extra_info_label = new Gtk.Label (null);
         extra_info_label.margin_start = 4;

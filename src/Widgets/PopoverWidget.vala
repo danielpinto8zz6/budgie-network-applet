@@ -23,13 +23,7 @@ public class Network.Widgets.PopoverWidget : Network.Widgets.NMVisualizer {
     private Gtk.ModelButton show_settings_button;
     private Gtk.ModelButton hidden_item;
 
-    public bool is_in_session { get; construct; }
-
     public signal void settings_shown ();
-
-    public PopoverWidget (bool is_in_session) {
-        Object (is_in_session: is_in_session);
-    }
 
     construct {
         show_settings_button.clicked.connect (show_settings);
@@ -55,17 +49,15 @@ public class Network.Widgets.PopoverWidget : Network.Widgets.NMVisualizer {
         add (wifi_box);
         add (vpn_box);
 
-        if (is_in_session) {
-            hidden_item = new Gtk.ModelButton ();
-            hidden_item.text = _("Connect to Hidden Network…");
-            hidden_item.no_show_all = true;
+        hidden_item = new Gtk.ModelButton ();
+        hidden_item.text = _("Connect to Hidden Network…");
+        hidden_item.no_show_all = true;
 
-            show_settings_button = new Gtk.ModelButton ();
-            show_settings_button.text = _("Network Settings…");
+        show_settings_button = new Gtk.ModelButton ();
+        show_settings_button.text = _("Network Settings…");
 
-            add (hidden_item);
-            add (show_settings_button);
-        }
+        add (hidden_item);
+        add (show_settings_button);
     }
 
     protected override void remove_interface (WidgetNMInterface widget_interface) {
@@ -98,7 +90,7 @@ public class Network.Widgets.PopoverWidget : Network.Widgets.NMVisualizer {
             container_box = vpn_box;
         }
 
-        if (is_in_session && get_children ().length () > 0) {
+        if (get_children ().length () > 0) {
             container_box.pack_end (widget_interface.sep);
         }
 
@@ -124,14 +116,18 @@ public class Network.Widgets.PopoverWidget : Network.Widgets.NMVisualizer {
     }
 
     void show_settings () {
-        if (is_in_session) {
-            try {
-                AppInfo.launch_default_for_uri ("settings://network", null);
-            } catch (Error e) {
-                warning ("Failed to open network settings: %s", e.message);
-            }
+        var app_info = new DesktopAppInfo("gnome-wifi-panel.desktop");
 
-            settings_shown ();
+        if (app_info == null) {
+            return;
         }
+
+        try {
+            app_info.launch(null, null);
+        } catch (Error e) {
+            message("Unable to launch gnome-wifi-panel.desktop: %s", e.message);
+        }
+
+        settings_shown ();
     }
 }

@@ -1,5 +1,6 @@
-# Wingpanel Network Indicator
-[![l10n](https://l10n.elementary.io/widgets/wingpanel/wingpanel-indicator-network/svg-badge.svg)](https://l10n.elementary.io/projects/wingpanel/wingpanel-indicator-network)
+# Budgie Network Applet
+This is a fork of [Wingpanel Network Indicator](https://github.com/elementary/wingpanel-indicator-network), ported to budgie desktop
+
 
 ![Screenshot](data/screenshot.png?raw=true)
 
@@ -8,10 +9,9 @@
 You'll need the following dependencies:
 
 * gobject-introspection
-* libgranite-dev
 * libnm-dev
 * libnma-dev
-* libwingpanel-2.0-dev
+* budgie-1.0
 * meson
 * valac
 
