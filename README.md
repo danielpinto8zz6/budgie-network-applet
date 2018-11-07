@@ -14,6 +14,7 @@ You'll need the following dependencies:
 * budgie-1.0
 * meson
 * valac
+* gee-0.8
 
 Run `meson` to configure the build environment and then `ninja` to build
 
