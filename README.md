@@ -24,3 +24,7 @@ Run `meson` to configure the build environment and then `ninja` to build
 To install, use `ninja install`
 
     sudo ninja install
+
+## Donation
+
+If you like this applet, you can donate via **[PayPal](https://www.paypal.me/danielpinto8zz6)**. It will help me to spend more time improving this!
