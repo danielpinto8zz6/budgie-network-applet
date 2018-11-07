@@ -49,7 +49,7 @@ public class Network.WifiInterface : Network.AbstractWifiInterface {
 
         var scrolled_box = new Gtk.ScrolledWindow (null, null);
         scrolled_box.hscrollbar_policy = Gtk.PolicyType.NEVER;
-        scrolled_box.max_content_height = 512;
+        scrolled_box.max_content_height = 250;
         scrolled_box.propagate_natural_height = true;
         scrolled_box.add (wifi_list);
 
