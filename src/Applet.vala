@@ -31,8 +31,6 @@ namespace Network {
 
         private unowned Budgie.PopoverManager ? manager = null;
 
-        protected Gtk.Image icon;
-
         private NetworkMonitor network_monitor;
         Widgets.PopoverWidget? popover_widget = null;
         Widgets.DisplayWidget? display_widget = null;
@@ -45,9 +43,6 @@ namespace Network {
 
             widget = new Gtk.EventBox ();
             add(widget);
-
-            icon = new Gtk.Image.from_icon_name("wireless-signal-excellent-symbolic",
-                Gtk.IconSize.MENU);
 
             get_style_context ().add_class ("budgie-network-applet");
 
