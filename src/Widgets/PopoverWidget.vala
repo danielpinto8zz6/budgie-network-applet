@@ -18,18 +18,19 @@
 */
 
 public class Network.Widgets.PopoverWidget : Network.Widgets.NMVisualizer {
+    public signal void close ();
+
     private Gtk.Box other_box;
     private Gtk.Box wifi_box;
     private Gtk.Box vpn_box;
     private Gtk.ModelButton show_settings_button;
     private Gtk.ModelButton hidden_item;
 
-    public signal void settings_shown ();
-
     construct {
         show_settings_button.clicked.connect (show_settings);
 
         hidden_item.clicked.connect (() => {
+            close ();
             bool found = false;
             wifi_box.get_children ().foreach ((child) => {
                 if (child is Network.WifiInterface && ((Network.WifiInterface) child).hidden_sensitivity && !found) {
@@ -129,6 +130,6 @@ public class Network.Widgets.PopoverWidget : Network.Widgets.NMVisualizer {
             message("Unable to launch gnome-wifi-panel.desktop: %s", e.message);
         }
 
-        settings_shown ();
+        close ();
     }
 }

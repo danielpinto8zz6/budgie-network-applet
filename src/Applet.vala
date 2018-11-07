@@ -57,7 +57,7 @@ namespace Network {
             popover_widget.notify["state"].connect (on_state_changed);
             popover_widget.notify["secure"].connect (on_state_changed);
             popover_widget.notify["extra-info"].connect (on_state_changed);
-            popover_widget.settings_shown.connect (() => { popover.hide(); });
+            popover_widget.close.connect (() => { popover.hide (); });
     
             widget.button_press_event.connect ((e)=> {
                 if (e.button != 1) {
