@@ -19,5 +19,3 @@ lib_install_dir = join_paths(get_option('prefix'), get_option(
 subdir('src')
 subdir('data')
 subdir('po')
-
-meson.add_install_script('build-aux/meson/postinstall.py')
