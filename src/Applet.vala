@@ -69,7 +69,7 @@ namespace Network {
                     return Gdk.EVENT_PROPAGATE;
                 }
                 if (popover.get_visible ()) {
-                    //  popover.hide ();
+                    popover.hide ();
                 } else {
                     this.manager.show_popover (widget);
                 }
