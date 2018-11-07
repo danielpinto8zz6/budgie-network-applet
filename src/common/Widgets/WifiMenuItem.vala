@@ -46,8 +46,6 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
 	Gtk.Spinner spinner;
 
 	public WifiMenuItem (NM.AccessPoint ap, WifiMenuItem? previous = null) {
-		this.margin_top = 3;
-		
 		radio_button = new Gtk.RadioButton (null);
         radio_button.hexpand = true;
 		radio_button.margin_start = 6;
