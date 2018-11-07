@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2018 Daniel Pinto (https://github.com/danielpinto8zz6/budgie-network-applet)
  * Copyright (c) 2017 elementary LLC. (http://launchpad.net/elementary)
  *
  * This program is free software: you can redistribute it and/or modify

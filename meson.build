@@ -1,6 +1,6 @@
 project('com.github.danielpinto8zz6.budgie-network-applet',
         ['vala', 'c'],
-        version: '5.1',
+        version: '1.0',
         meson_version: '>=0.40.0',
         license: 'GPL2')
 

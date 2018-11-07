@@ -1,5 +1,5 @@
-// -*- Mode: vala; indent-tabs-mode: nil; tab-width: 4 -*-
-/*-
+/*
+ * Copyright (c) 2018 Daniel Pinto (https://github.com/danielpinto8zz6/budgie-network-applet)
  * Copyright (c) 2017 elementary LLC. (https://elementary.io)
  *
  * This program is free software: you can redistribute it and/or modify

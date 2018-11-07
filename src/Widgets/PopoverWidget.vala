@@ -1,4 +1,5 @@
 /*
+* Copyright (c) 2018 Daniel Pinto (https://github.com/danielpinto8zz6/budgie-network-applet)
 * Copyright (c) 2015-2016 elementary LLC (http://launchpad.net/wingpanel-indicator-network)
 *
 * This program is free software: you can redistribute it and/or modify
