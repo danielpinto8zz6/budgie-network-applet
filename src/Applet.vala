@@ -31,7 +31,7 @@ namespace Network {
 
         private unowned Budgie.PopoverManager ? manager = null;
 
-        private NetworkMonitor network_monitor;
+        //  private NetworkMonitor network_monitor;
         Widgets.PopoverWidget? popover_widget = null;
         Widgets.DisplayWidget? display_widget = null;
 
@@ -76,7 +76,7 @@ namespace Network {
             show_all ();
 
             on_state_changed ();
-            start_monitor ();
+            //  start_monitor ();
         }
 
         public override void update_popovers (Budgie.PopoverManager ? manager) {
@@ -84,19 +84,19 @@ namespace Network {
             manager.register_popover (widget, popover);
         }
 
-        private void start_monitor () {
-            network_monitor = NetworkMonitor.get_default ();
+        //  private void start_monitor () {
+        //      network_monitor = NetworkMonitor.get_default ();
     
-            network_monitor.network_changed.connect ((availabe) => {  
-                if (network_monitor.get_connectivity () == NetworkConnectivity.FULL || network_monitor.get_connectivity () == NetworkConnectivity.PORTAL) {
-                    try {
-                        AppInfo.launch_default_for_uri ("https://google.com", null);
-                    } catch (Error e) {
-                        warning ("%s\n", e.message);
-                    }
-                }
-            });
-        }
+        //      network_monitor.network_changed.connect ((availabe) => {  
+        //          if (network_monitor.get_connectivity () == NetworkConnectivity.FULL || network_monitor.get_connectivity () == NetworkConnectivity.PORTAL) {
+        //              try {
+        //                  AppInfo.launch_default_for_uri ("https://google.com", null);
+        //              } catch (Error e) {
+        //                  warning ("%s\n", e.message);
+        //              }
+        //          }
+        //      });
+        //  }
 
         void on_state_changed () {
             assert (popover_widget != null);
