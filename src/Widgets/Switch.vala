@@ -23,16 +23,18 @@ public class Network.Widgets.Switch : Network.Widgets.Container {
 
     public bool active { get; set; }
     public string caption { owned get; set; }
+    public string icon_name { owned get; set; }
 
     private Gtk.Label button_label;
+    private Gtk.Image button_image;
     private Gtk.Switch button_switch;
 
-    public Switch (string caption, bool active = false) {
-        Object (caption: caption, active: active);
+    public Switch (string caption, string icon_name, bool active = false) {
+        Object (caption: caption, icon_name: icon_name, active: active);
     }
 
-    public Switch.with_mnemonic (string caption, bool active = false) {
-        Object (caption: caption, active: active);
+    public Switch.with_mnemonic (string caption, string icon_name, bool active = false) {
+        Object (caption: caption, icon_name: icon_name, active: active);
         button_label.set_text_with_mnemonic (caption);
         button_label.set_mnemonic_widget (this);
     }
@@ -45,13 +47,16 @@ public class Network.Widgets.Switch : Network.Widgets.Container {
         button_switch.hexpand = true;
         button_switch.valign = Gtk.Align.CENTER;
 
+        button_image = new Gtk.Image.from_icon_name(icon_name, Gtk.IconSize.MENU);
+
         button_label = new Gtk.Label (null);
         button_label.halign = Gtk.Align.START;
         button_label.margin_start = 6;
         button_label.margin_end = 10;
 
-        content_widget.attach (button_label, 0, 0, 1, 1);
-        content_widget.attach (button_switch, 1, 0, 1, 1);
+        content_widget.attach (button_image, 0, 0, 1, 1);
+        content_widget.attach (button_label, 1, 0, 1, 1);
+        content_widget.attach (button_switch, 2, 0, 1, 1);
 
         clicked.connect (() => {
             toggle_switch ();

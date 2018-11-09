@@ -43,7 +43,7 @@ public class Network.WifiInterface : Network.AbstractWifiInterface {
 
     construct {
         orientation = Gtk.Orientation.VERTICAL;
-        wifi_item = new Network.Widgets.Switch ("");
+        wifi_item = new Network.Widgets.Switch ("", "network-wireless-symbolic");
         wifi_item.get_style_context ().add_class ("h4");
         pack_start (wifi_item);
 

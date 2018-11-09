@@ -41,7 +41,7 @@ public class Network.VpnInterface : Network.AbstractVpnInterface {
 
     construct {
         orientation = Gtk.Orientation.VERTICAL;
-        vpn_item = new Network.Widgets.Switch ("");
+        vpn_item = new Network.Widgets.Switch ("", "user-not-tracked-symbolic");
         vpn_item.get_style_context ().add_class ("h4");
         pack_start (vpn_item);
 

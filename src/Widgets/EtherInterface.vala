@@ -22,7 +22,7 @@ public class Network.EtherInterface : Network.AbstractEtherInterface {
 
     public EtherInterface (NM.Client nm_client, NM.Device? _device) {
         device = _device;
-        ethernet_item = new Network.Widgets.Switch (display_title);
+        ethernet_item = new Network.Widgets.Switch (display_title, "network-wired-symbolic");
 
         notify["display-title"].connect (() => {
             ethernet_item.caption = display_title;
