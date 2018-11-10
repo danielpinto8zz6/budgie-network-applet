@@ -26,7 +26,6 @@ public abstract class Network.AbstractWifiInterface : Network.WidgetNMInterface 
 	protected NM.Client nm_client;
 	
 	protected WifiMenuItem? active_wifi_item { get; set; }
-	protected WifiMenuItem? blank_item = null;
 	protected Gtk.Stack placeholder;
 
 	protected bool locked;
@@ -39,7 +38,6 @@ public abstract class Network.AbstractWifiInterface : Network.WidgetNMInterface 
 		this.nm_client = nm_client;
 		device = _device;
 		wifi_device = (NM.DeviceWifi)device;
-		blank_item = new WifiMenuItem.blank ();
 		active_wifi_item = null;
 		
 		var no_aps_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 6);
@@ -97,8 +95,14 @@ public abstract class Network.AbstractWifiInterface : Network.WidgetNMInterface 
 		placeholder.visible = true;
 
 		wifi_list = new Gtk.ListBox ();
+		wifi_list.activate_on_single_click = true;
+		wifi_list.selection_mode = Gtk.SelectionMode.SINGLE;
 		wifi_list.set_sort_func (sort_func);
 		wifi_list.set_placeholder (placeholder);
+		wifi_list.row_activated.connect ((row) => {
+			var wifi_item = (WifiMenuItem)row;
+			wifi_item.user_action ();
+		});
 
 		map.connect (() => wifi_list.invalidate_sort ());
 	}
@@ -126,7 +130,7 @@ public abstract class Network.AbstractWifiInterface : Network.WidgetNMInterface 
 
 	void access_point_added_cb (Object ap_) {
 		NM.AccessPoint ap = (NM.AccessPoint)ap_;
-		WifiMenuItem? previous_wifi_item = blank_item;
+		WifiMenuItem? previous_wifi_item = null;
 
 		if (ap.ssid == null) {
 			debug ("NULL AP SSID");
@@ -174,14 +178,12 @@ public abstract class Network.AbstractWifiInterface : Network.WidgetNMInterface 
 
 		if (active_ap == null) {
 			debug("No active AP");
-			blank_item.set_active (true);
 			return;
 		}
 
 		var ssid = active_ap.ssid;
 		if (ssid == null) {
 			debug ("NULL active AP SSID");
-			blank_item.set_active (true);
 			return;
 		}
 
@@ -195,7 +197,6 @@ public abstract class Network.AbstractWifiInterface : Network.WidgetNMInterface 
 
 			if (ssid.compare (menu_item.ssid) == 0) {
 				found = true;
-				menu_item.set_active (true);
 				active_wifi_item = menu_item;
 				active_wifi_item.state = state;
 			}

@@ -24,26 +24,34 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
 
     private Gee.LinkedList<NM.AccessPoint> all_aps;
 
-    Gtk.RadioButton radio_button;
     Gtk.Image img_strength;
     Gtk.Image lock_img;
     Gtk.Image error_img;
     Gtk.Spinner spinner;
     uint refresh_source = 0;
+    private Gtk.Label network_label;
+    private Gtk.Label network_state_label;
 
     construct {
         all_aps = new Gee.LinkedList<NM.AccessPoint> ();
         get_style_context ().add_class ("menuitem");
 
-        radio_button = new Gtk.RadioButton (null);
-        radio_button.hexpand = true;
-        radio_button.margin_start = 6;
+        network_label = new Gtk.Label(null);
+        network_label.halign = Gtk.Align.START;
+        network_label.expand = true;
+        network_label.margin_start = 6;
+
+        network_state_label = new Gtk.Label(null);
+        network_state_label.halign = Gtk.Align.START;
+        network_state_label.expand = true;
+        network_state_label.margin_start = 6;
 
         img_strength = new Gtk.Image ();
-        img_strength.icon_size = Gtk.IconSize.MENU;
-        img_strength.margin_end = 6;
+        img_strength.icon_size = Gtk.IconSize.LARGE_TOOLBAR;
+        img_strength.margin_start = 6;
 
-        lock_img = new Gtk.Image.from_icon_name ("channel-insecure-symbolic", Gtk.IconSize.MENU);
+        lock_img = new Gtk.Image.from_icon_name ("channel-secure-symbolic", Gtk.IconSize.MENU);
+        lock_img.margin_end = 6;
 
         /* TODO: investigate this, it has not been tested yet. */
         error_img = new Gtk.Image.from_icon_name ("process-error-symbolic", Gtk.IconSize.MENU);
@@ -56,21 +64,16 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
 
         var grid = new Gtk.Grid ();
         grid.column_spacing = 6;
-        grid.margin_end = 6;
-        grid.add (radio_button);
-        grid.add (spinner);
-        grid.add (error_img);
-        grid.add (lock_img);
-        grid.add (img_strength);
+        grid.attach (img_strength, 0, 0, 1, 2);
+        grid.attach_next_to (network_label, img_strength, Gtk.PositionType.RIGHT, 1, 1);
+        grid.attach_next_to (network_state_label, network_label, Gtk.PositionType.BOTTOM, 1, 1);
+        grid.attach_next_to (spinner, network_label, Gtk.PositionType.RIGHT, 1, 2);
+        grid.attach_next_to (error_img, spinner, Gtk.PositionType.RIGHT, 1, 2);
+        grid.attach_next_to (lock_img, error_img, Gtk.PositionType.RIGHT, 1, 2);
 
         add (grid);
 
         notify["state"].connect (update);
-        radio_button.notify["active"].connect (update);
-        button_release_event.connect (() => { activate (); });
-        activate.connect (() => {
-            user_action ();
-        });
 
         map.connect (() => start_refresh ());
         unmap.connect (() => stop_refresh ());
@@ -81,22 +84,7 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
                 margin_top: 3);
         add_ap (ap);
 
-        if (previous != null) {
-            radio_button.set_group (previous.radio_button.get_group ());
-        }
-        
         show_all ();
-    }
-
-    /**
-     * Only used for an item which is not displayed: hacky way to have no radio button selected.
-     **/
-    public WifiMenuItem.blank () {
-        get_child ().destroy ();
-    }
-
-    public void set_active (bool active) {
-        radio_button.active = active;
     }
 
     public void add_ap (NM.AccessPoint ap) {
@@ -148,7 +136,7 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
     }
 
     private void update () {
-        radio_button.label = NM.Utils.ssid_to_utf8 (ssid.get_data ());
+        network_label.label = NM.Utils.ssid_to_utf8 (ssid.get_data ());
 
         NM.AccessPoint ap = null;
         lock (all_aps) {
@@ -174,8 +162,7 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
             tooltip_text = _("This network is unsecured");
         }
 
-        lock_img.visible = !is_secured;
-        lock_img.no_show_all = !lock_img.visible;
+        lock_img.icon_name = is_secured ? "channel-secure-symbolic" : "channel-insecure-symbolic";
 
         hide_item (error_img);
         hide_item (spinner);
@@ -183,12 +170,21 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
         switch (state) {
             case State.FAILED_WIFI:
                 show_item (error_img);
+                network_state_label.label = _("Failed to connect");
                 break;
             case State.CONNECTING_WIFI:
                 show_item (spinner);
-                if (!radio_button.active) {
-                    critical ("An access point is being connected but not active.");
-                }
+                network_state_label.label = _("Connecting");
+                break;
+            case State.CONNECTED_WIFI:
+            case State.CONNECTED_WIFI_WEAK:
+            case State.CONNECTED_WIFI_OK:
+            case State.CONNECTED_WIFI_GOOD:
+            case State.CONNECTED_WIFI_EXCELLENT:
+                network_state_label.label = _("Connected");
+                break;
+            default:
+                network_state_label.label = _("Disconnected");
                 break;
         }
 

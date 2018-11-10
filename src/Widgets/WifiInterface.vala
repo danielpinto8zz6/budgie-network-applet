@@ -106,8 +106,7 @@ public class Network.WifiInterface : Network.AbstractWifiInterface {
         }
 
         /* Do an update at the next iteration of the main loop, so as every
-         * signal is flushed (for instance signals responsible for radio button
-         * checked) */
+         * signal is flushed */
         Idle.add (() => { update (); return false; });
     }
 
