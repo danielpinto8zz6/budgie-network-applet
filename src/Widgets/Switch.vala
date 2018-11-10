@@ -47,7 +47,9 @@ public class Network.Widgets.Switch : Network.Widgets.Container {
         button_switch.hexpand = true;
         button_switch.valign = Gtk.Align.CENTER;
 
-        button_image = new Gtk.Image.from_icon_name(icon_name, Gtk.IconSize.MENU);
+        button_image = new Gtk.Image.from_icon_name (icon_name, Gtk.IconSize.MENU);
+        button_image.halign = Gtk.Align.CENTER;
+        button_image.valign = Gtk.Align.CENTER;
 
         button_label = new Gtk.Label (null);
         button_label.halign = Gtk.Align.START;
