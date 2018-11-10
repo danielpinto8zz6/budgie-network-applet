@@ -52,6 +52,7 @@ namespace Network {
 
             popover_widget = new Widgets.PopoverWidget ();
             popover_widget.width_request = 250;
+            popover_widget.border_width = 6;
             popover.add (popover_widget);
             popover_widget.notify["state"].connect (on_state_changed);
             popover_widget.notify["secure"].connect (on_state_changed);
