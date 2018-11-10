@@ -23,7 +23,7 @@ public class Network.Widgets.Switch : Network.Widgets.Container {
 
     public bool active { get; set; }
     public string caption { owned get; set; }
-    public string icon_name { owned get; set; }
+    public string icon_name { owned get; construct; }
 
     private Gtk.Label button_label;
     private Gtk.Image button_image;
