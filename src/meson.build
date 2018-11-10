@@ -38,7 +38,8 @@ network_applet_sources = [
             'Widgets/WifiInterface.vala',
             'Widgets/PopoverWidget.vala',
             'Widgets/Separator.vala',
-            'Widgets/Switch.vala'
+            'Widgets/Switch.vala',
+            'Widgets/OverlayIcon.vala'
             ]
 
 network_applet_deps = [

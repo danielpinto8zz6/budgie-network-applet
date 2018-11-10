@@ -18,7 +18,7 @@
 */
 
 public class Network.Widgets.DisplayWidget : Gtk.Box {
-    private Gtk.Image image;
+    private OverlayIcon icon;
     private Gtk.Label extra_info_label;
     private Gtk.Revealer extra_info_revealer;
 
@@ -34,9 +34,8 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
     }
 
     construct {
-        image = new Gtk.Image ();
-        image.icon_name = "network-wired-symbolic";
-        image.icon_size = Gtk.IconSize.MENU;
+        icon = new OverlayIcon ("network-wired-symbolic");
+        //  icon.main_image_icon_size = Gtk.IconSize.MENU;
 
         extra_info_label = new Gtk.Label (null);
         extra_info_label.margin_start = 4;
@@ -47,7 +46,7 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
         extra_info_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
         extra_info_revealer.add (extra_info_label);
 
-        pack_start (image);
+        pack_start (icon);
         pack_start (extra_info_revealer);
     }
 
@@ -67,28 +66,28 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
 
         switch (state) {
         case Network.State.DISCONNECTED_AIRPLANE_MODE:
-            image.icon_name = "airplane-mode-symbolic";
+            icon.set_name("airplane-mode-symbolic");
             break;
         case Network.State.CONNECTING_WIRED:
-            image.icon_name = "network-wired-acquiring-symbolic";
+            icon.set_name("network-wired-acquiring-symbolic");
             break;
         case Network.State.CONNECTED_WIRED:
-            image.icon_name = "network-wired-%ssymbolic".printf (secure? "secure-" : "");
+            icon.set_name("network-wired-symbolic", secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTED_WIFI:
-            image.icon_name = "network-wireless-connected-symbolic";
+        icon.set_name ("network-wireless-connected-symbolic");
             break;
         case Network.State.CONNECTED_WIFI_WEAK:
-            image.icon_name = "network-wireless-signal-weak-%ssymbolic".printf (secure? "secure-" : "");
+        icon.set_name ("network-wireless-signal-weak-symbolic", secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTED_WIFI_OK:
-            image.icon_name = "network-wireless-signal-ok-%ssymbolic".printf (secure? "secure-" : "");
+        icon.set_name ("network-wireless-signal-ok-symbolic", secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTED_WIFI_GOOD:
-            image.icon_name = "network-wireless-signal-good-%ssymbolic".printf (secure? "secure-" : "");
+        icon.set_name("network-wireless-signal-good-symbolic",secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTED_WIFI_EXCELLENT:
-            image.icon_name = "network-wireless-signal-excellent-%ssymbolic".printf (secure? "secure-" : "");
+        icon.set_name("network-wireless-signal-excellent-symbolic", secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTING_WIFI:
             wifi_animation_timeout = Timeout.add (300, () => {
@@ -108,21 +107,21 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
                     strength = "excellent";
                     break;
                 }
-                image.icon_name = "network-wireless-signal-" + strength + (secure? "-secure" : "") + "-symbolic";
+                icon.set_name("network-wireless-signal-" + strength + "-symbolic",secure ? "nm-vpn-lock" : "");
                 return true;
             });
             break;
         case Network.State.CONNECTED_MOBILE_WEAK:
-            image.icon_name = "network-cellular-signal-weak-%ssymbolic".printf (secure ? "secure-" : "");
+        icon.set_name ("network-cellular-signal-weak-symbolic",secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTED_MOBILE_OK:
-            image.icon_name = "network-cellular-signal-ok-%ssymbolic".printf (secure ? "secure-" : "");
+        icon.set_name ("network-cellular-signal-ok-symbolic",secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTED_MOBILE_GOOD:
-            image.icon_name = "network-cellular-signal-good-%ssymbolic".printf (secure ? "secure-" : "");
+        icon.set_name ("network-cellular-signal-good-symbolic",secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTED_MOBILE_EXCELLENT:
-            image.icon_name = "network-cellular-signal-excellent-%ssymbolic".printf (secure ? "secure-" : "");
+        icon.set_name ("network-cellular-signal-excellent-symbolic",secure ? "nm-vpn-lock" : "");
             break;
         case Network.State.CONNECTING_MOBILE:
             cellular_animation_timeout = Timeout.add (300, () => {
@@ -143,22 +142,22 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
                     break;
                 }
 
-                image.icon_name = "network-cellular-signal-" + strength + (secure ? "secure-" : "")  + "-symbolic";
+                icon.set_name ("network-cellular-signal-" + strength + "-symbolic", secure ? "nm-vpn-lock" : "");
                 return true;
             });
             break;
         case Network.State.FAILED_MOBILE:
-            image.icon_name = "network-cellular-offline-symbolic";
+        icon.set_name ("network-cellular-offline-symbolic");
             break;
         case Network.State.FAILED_WIFI:
         case Network.State.DISCONNECTED:
-            image.icon_name = "network-wireless-offline-symbolic";
+        icon.set_name ("network-wireless-offline-symbolic");
             break;
         case Network.State.WIRED_UNPLUGGED:
-            image.icon_name = "network-wired-offline-symbolic";
+        icon.set_name ("network-wired-offline-symbolic");
             break;
         default:
-            image.icon_name = "network-offline-symbolic";
+        icon.set_name ("network-offline-symbolic");
             critical("Unknown network state, cannot show the good icon: %s", state.to_string());
             break;
         }
