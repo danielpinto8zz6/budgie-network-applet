@@ -76,7 +76,6 @@ namespace Network {
             show_all ();
 
             on_state_changed ();
-            //  start_monitor ();
         }
 
         public override void update_popovers (Budgie.PopoverManager ? manager) {
