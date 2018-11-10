@@ -56,6 +56,7 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
 
         var grid = new Gtk.Grid ();
         grid.column_spacing = 6;
+        grid.margin_end = 6;
         grid.add (radio_button);
         grid.add (spinner);
         grid.add (error_img);
