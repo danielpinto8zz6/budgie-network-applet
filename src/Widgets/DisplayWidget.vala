@@ -28,7 +28,9 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
     int cellular_animation_state = 0;
 
     public DisplayWidget () {
-        Object (orientation: Gtk.Orientation.HORIZONTAL);
+        Object (orientation: Gtk.Orientation.HORIZONTAL,
+                halign: Gtk.Align.CENTER,
+                valign: Gtk.Align.CENTER);
     }
 
     construct {
