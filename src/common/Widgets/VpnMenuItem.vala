@@ -16,6 +16,8 @@
  */
 
 public class Network.VpnMenuItem : Gtk.ListBoxRow {
+    private static unowned Gtk.RadioButton? blank_button = null;
+
     public signal void user_action ();
     public NM.RemoteConnection? connection { get; private set; }
     public string id {
@@ -25,24 +27,26 @@ public class Network.VpnMenuItem : Gtk.ListBoxRow {
     }
     public Network.State vpn_state { get; set; default = Network.State.DISCONNECTED; }
 
+    public Gtk.RadioButton radio_button { get; private set; }
     Gtk.Spinner spinner;
     Gtk.Image error_img;
-
-    private Gtk.Label vpn_label;
-    private Gtk.Label vpn_state_label;
 
     public VpnMenuItem (NM.RemoteConnection? _connection) {
         connection = _connection;
         connection.changed.connect (update);
 
-        vpn_label = new Gtk.Label(null);
-        vpn_label.halign = Gtk.Align.START;
-        vpn_label.expand = true;
-        vpn_label.margin_start = 6;
-        vpn_state_label = new Gtk.Label(null);
-        vpn_state_label.halign = Gtk.Align.START;
-        vpn_state_label.expand = true;
-        vpn_state_label.margin_start = 6;
+        var main_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 6);
+        main_box.margin_start = main_box.margin_end = 6;
+
+        radio_button = new Gtk.RadioButton (null);
+        if (blank_button != null) {
+            radio_button.join_group (blank_button);
+        }
+
+        radio_button.button_release_event.connect ((b, ev) => {
+            user_action ();
+            return false;
+        });
 
         error_img = new Gtk.Image.from_icon_name ("process-error-symbolic", Gtk.IconSize.MENU);
         error_img.margin_start = 6;
@@ -53,42 +57,47 @@ public class Network.VpnMenuItem : Gtk.ListBoxRow {
         spinner.visible = false;
         spinner.no_show_all = !spinner.visible;
 
-        var grid = new Gtk.Grid ();
-        grid.column_spacing = 6;
-        grid.attach (vpn_label, 0, 0, 1, 1);
-        grid.attach_next_to (vpn_state_label, vpn_label, Gtk.PositionType.BOTTOM, 1, 1);
-        grid.attach_next_to (spinner, vpn_label, Gtk.PositionType.RIGHT, 1, 2);
-        grid.attach_next_to (error_img, spinner, Gtk.PositionType.RIGHT, 1, 2);
-
-        add (grid);
-        get_style_context ().add_class ("menuitem");
+        main_box.pack_start (radio_button, true, true);
+        main_box.pack_start (spinner, false, false);
+        main_box.pack_start (error_img, false, false);
 
         notify["vpn_state"].connect (update);
+        radio_button.notify["active"].connect (update);
+
+        add (main_box);
+        get_style_context ().add_class ("menuitem");
 
         update ();
     }
 
+    /**
+    * Only used for an item which is not displayed: hacky way to have no radio button selected.
+    **/
+    public VpnMenuItem.blank () {
+        radio_button = new Gtk.RadioButton (null);
+        blank_button = radio_button;
+    }
+
     private void update () {
-        vpn_label.label = connection.get_id ();
+        radio_button.label = connection.get_id ();
         hide_item (error_img);
         hide_item (spinner);
 
         switch (vpn_state) {
             case State.FAILED_VPN:
                 show_item (error_img);
-                vpn_state_label.label = _("Failed to connect");
                 break;
             case State.CONNECTING_VPN:
                 show_item (spinner);
-                vpn_state_label.label = _("Connecting");
-                break;
-            case State.CONNECTED_VPN:
-                vpn_state_label.label = _("Connected");
-                break;
-            default:
-                vpn_state_label.label = _("Disconnected");
+                if (!radio_button.active) {
+                    critical ("An VPN is being connected but not active.");
+                }
                 break;
         }
+    }
+
+    public void set_active (bool active) {
+        radio_button.set_active (active);
     }
 
     void show_item (Gtk.Widget w) {

@@ -23,6 +23,7 @@ public abstract class Network.AbstractVpnInterface : Network.WidgetNMInterface {
     protected NM.Client nm_client;
 
     protected VpnMenuItem? active_vpn_item { get; set; }
+    protected VpnMenuItem? blank_item = null;
 
     /**
      * If we want to add a visual feedback on DisplayWidget later,
@@ -34,6 +35,8 @@ public abstract class Network.AbstractVpnInterface : Network.WidgetNMInterface {
         nm_client = _nm_client;
         display_title = _("VPN");
 
+        blank_item = new VpnMenuItem.blank ();
+        vpn_list.add (blank_item);
         active_vpn_item = null;
 
         nm_client.notify["active-connections"].connect (update);
@@ -47,14 +50,9 @@ public abstract class Network.AbstractVpnInterface : Network.WidgetNMInterface {
 
     construct {
         vpn_list = new Gtk.ListBox ();
-        vpn_list.selection_mode = Gtk.SelectionMode.SINGLE;
         // Single click is disabled because it's being handled by VpnMenuItem
         vpn_list.activate_on_single_click = false;
         vpn_list.visible = true;
-        vpn_list.row_activated.connect ((row) => {
-			var vpn_item = (VpnMenuItem)row;
-			vpn_item.user_action ();
-		});
     }
 
     public override void update_name (int count) {
@@ -94,6 +92,8 @@ public abstract class Network.AbstractVpnInterface : Network.WidgetNMInterface {
         }
 
         if (item == null) {
+            blank_item.set_active (true);
+
             if (active_vpn_item != null) {
                 active_vpn_item.no_show_all = false;
                 active_vpn_item.visible = true;
@@ -162,6 +162,7 @@ public abstract class Network.AbstractVpnInterface : Network.WidgetNMInterface {
                         continue;
 
                     if (menu_item.connection.get_uuid () == active_vpn_connection.uuid) {
+                        menu_item.set_active (true);
                         active_vpn_item = menu_item;
                         active_vpn_item.vpn_state = vpn_state;
                     }
