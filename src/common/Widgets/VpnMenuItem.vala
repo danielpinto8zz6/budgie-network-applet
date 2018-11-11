@@ -32,6 +32,8 @@ public class Network.VpnMenuItem : Gtk.ListBoxRow {
     Gtk.Image error_img;
 
     public VpnMenuItem (NM.RemoteConnection? _connection) {
+        Object (margin_top: 3);
+        
         connection = _connection;
         connection.changed.connect (update);
 

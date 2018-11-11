@@ -43,11 +43,12 @@ public class Network.WifiInterface : Network.AbstractWifiInterface {
 
     construct {
         orientation = Gtk.Orientation.VERTICAL;
-        wifi_item = new Network.Widgets.Switch ("", "network-wireless-symbolic");
+        wifi_item = new Network.Widgets.Switch ("");
         wifi_item.get_style_context ().add_class ("h4");
         pack_start (wifi_item);
 
         var scrolled_box = new Gtk.ScrolledWindow (null, null);
+        scrolled_box.margin_top = 6;
         scrolled_box.hscrollbar_policy = Gtk.PolicyType.NEVER;
         scrolled_box.max_content_height = 250;
         scrolled_box.propagate_natural_height = true;

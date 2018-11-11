@@ -57,7 +57,7 @@ public class Network.ModemInterface : Network.AbstractModemInterface {
 
     public ModemInterface (NM.Client nm_client, NM.Device? _device) {
         device = _device;
-        modem_item = new Network.Widgets.Switch (display_title, "network-cellular-signal-excellent-symbolic");
+        modem_item = new Network.Widgets.Switch (display_title);
 
         notify["display-title"].connect (() => {
             modem_item.caption = display_title;
