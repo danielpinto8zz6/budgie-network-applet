@@ -30,8 +30,10 @@ To install, use `ninja install`
 you can install that applet on archlinux with aur : [budgie-network-applet](https://aur.archlinux.org/packages/budgie-network-applet)
 
 ### Solus (dependencies)
-sudo eopkg install budgie-desktop-devel libgtk-3-devel ninja gobject-introspection meson vala network-manager-applet-devel libgee-devel
-
+```
+sudo eopkg it -c system.devel
+sudo eopkg it budgie-desktop-devel libgtk-3-devel ninja gobject-introspection meson vala network-manager-applet-devel libgee-devel gcc
+```
 ## Donation
 
 If you like this applet, you can donate via **[PayPal](https://www.paypal.me/danielpinto8zz6)**. It will help me to spend more time improving this!
