@@ -8,10 +8,13 @@ i18n=import('i18n')
 
 add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()), language: 'c')
 
-add_project_arguments(
-    '--vapidir', join_paths(meson.current_source_dir(), 'vapi'),
-    language: 'vala'
-)
+#add_project_arguments(
+#    '--vapidir', join_paths(meson.current_source_dir(), 'vapi'),
+#    language: 'vala'
+#)
+VAPI_DIR = join_paths(meson.source_root(),
+                      'vapi')
+
 
 i18n=import('i18n')
 

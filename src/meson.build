@@ -52,7 +52,7 @@ network_applet_deps = [
             dependency('gobject-2.0'),
             ]
 
-network_applet_vala_args = ['--target-glib=2.50', config_header]
+network_applet_vala_args = ['--target-glib=2.50', config_header, '--vapidir=' + VAPI_DIR]
 
 shared_library('networkapplet', network_applet_sources,
                dependencies: network_applet_deps,
