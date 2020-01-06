@@ -1,7 +1,7 @@
 [Plugin]
 Module=networkapplet.so
 Name=Network
-Description=Network Applet
+_Description=Network Applet
 Authors=Daniel Pinto
 Copyright=Copyright © 2018 Daniel Pinto
 Website=https://github.com/danielpinto8zz6/budgie-network-applet
