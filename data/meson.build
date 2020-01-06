@@ -15,9 +15,9 @@ custom_target('plugin-file-network',
 #  install_dir: lib_install_dir
 #)
 
-plugin_utils = find_program('desktop-file-validate', required: false)
-if plugin_utils.found()
-  test('Validate plugin file', plugin_utils,
-    args: [plugin_file]
-  )
-endif
+#plugin_utils = find_program('desktop-file-validate', required: false)
+#if plugin_utils.found()
+#  test('Validate plugin file', plugin_utils,
+#    args: [plugin_file]
+#  )
+#endif
