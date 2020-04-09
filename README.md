@@ -1,5 +1,6 @@
-# Wingpanel Network Indicator
-[![l10n](https://l10n.elementary.io/widgets/wingpanel/wingpanel-indicator-network/svg-badge.svg)](https://l10n.elementary.io/projects/wingpanel/wingpanel-indicator-network)
+# Budgie Network Applet
+This is a fork of [Wingpanel Network Indicator](https://github.com/elementary/wingpanel-indicator-network), ported to budgie desktop
+
 
 ![Screenshot](data/screenshot.png?raw=true)
 
@@ -8,12 +9,12 @@
 You'll need the following dependencies:
 
 * gobject-introspection
-* libgranite-dev
 * libnm-dev
 * libnma-dev
-* libwingpanel-2.0-dev
+* budgie-1.0
 * meson
 * valac
+* gee-0.8
 
 Run `meson` to configure the build environment and then `ninja` to build
 
@@ -24,3 +25,15 @@ Run `meson` to configure the build environment and then `ninja` to build
 To install, use `ninja install`
 
     sudo ninja install
+    
+### Arch
+you can install that applet on archlinux with aur : [budgie-network-applet](https://aur.archlinux.org/packages/budgie-network-applet)
+
+### Solus (dependencies)
+```
+sudo eopkg it -c system.devel
+sudo eopkg it budgie-desktop-devel libgtk-3-devel ninja gobject-introspection meson vala network-manager-applet-devel libgee-devel gcc
+```
+## Donation
+
+If you like this applet, you can donate via **[PayPal](https://www.paypal.me/danielpinto8zz6)**. It will help me to spend more time improving this!

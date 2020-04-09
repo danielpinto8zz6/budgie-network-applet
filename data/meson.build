@@ -1,8 +1,15 @@
-i18n.merge_file(
-    input: 'network.appdata.xml.in',
-    output: 'io.elementary.wingpanel.network.appdata.xml',
-    po_dir: join_paths(meson.source_root(), 'po', 'extra'),
-    type: 'xml',
-    install: true,
-    install_dir: join_paths(get_option('datadir'), 'metainfo'),
+plugin_file = i18n.merge_file(
+  input: 'com.github.danielpinto8zz6.budgie-network-applet.plugin.in',
+  output: 'com.github.danielpinto8zz6.budgie-network-applet.plugin',
+  type: 'desktop',
+  po_dir: '../po',
+  install: true,
+  install_dir: lib_install_dir
 )
+
+plugin_utils = find_program('desktop-file-validate', required: false)
+if plugin_utils.found()
+  test('Validate plugin file', plugin_utils,
+    args: [plugin_file]
+  )
+endif

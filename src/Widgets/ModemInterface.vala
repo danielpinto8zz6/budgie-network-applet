@@ -19,7 +19,7 @@
  */
 
 public class Network.ModemInterface : Network.AbstractModemInterface {
-    private Wingpanel.Widgets.Switch modem_item;
+    private Network.Widgets.Switch modem_item;
     private DBusObjectManagerClient? modem_manager;
 
     private uint32 _signal_quality;
@@ -57,7 +57,7 @@ public class Network.ModemInterface : Network.AbstractModemInterface {
 
     public ModemInterface (NM.Client nm_client, NM.Device? _device) {
         device = _device;
-        modem_item = new Wingpanel.Widgets.Switch (display_title);
+        modem_item = new Network.Widgets.Switch (display_title);
 
         notify["display-title"].connect (() => {
             modem_item.caption = display_title;

@@ -17,7 +17,7 @@ msgstr ""
 
 #: src/Indicator.vala:29
 msgid "Network"
-msgstr "Newtork"
+msgstr "Network"
 
 #: src/Indicator.vala:30
 msgid "Network indicator"

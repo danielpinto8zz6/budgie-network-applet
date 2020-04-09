@@ -75,7 +75,7 @@ public class Network.WifiMenuItem : Gtk.ListBoxRow {
     }
 
     public WifiMenuItem (NM.AccessPoint ap, WifiMenuItem? previous = null) {
-        Object (ssid: ap.ssid);
+        Object (ssid: ap.ssid, margin_top: 3);
         add_ap (ap);
 
         if (previous != null) {

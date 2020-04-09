@@ -21,7 +21,7 @@ public abstract class Network.WidgetNMInterface : Gtk.Box {
     public string? extra_info { protected set; get; default = null; }
     public string display_title { get; protected set; default = _("Unknown device"); }
 
-    public Wingpanel.Widgets.Separator sep { get; private set; default = new Wingpanel.Widgets.Separator (); }
+    public Network.Widgets.Separator sep { get; private set; default = new Network.Widgets.Separator (); }
 
     public signal void show_dialog (Gtk.Widget w);
     public signal void need_settings ();
