@@ -28,9 +28,12 @@ public abstract class Network.AbstractModemInterface : Network.WidgetNMInterface
         }
 
         if (device is NM.DeviceModem) {
-            var capabilities = (device as NM.DeviceModem).get_current_capabilities ();
-            if (NM.DeviceModemCapabilities.POTS in capabilities) {
-                display_title = _("Modem");
+            var device = (device as NM.DeviceModem);
+            if (device != null) {
+                var capabilities = device.get_current_capabilities ();
+                if (NM.DeviceModemCapabilities.POTS in capabilities) {
+                    display_title = _("Modem");
+                }
             }
         }
     }

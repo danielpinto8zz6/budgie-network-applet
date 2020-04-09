@@ -17,11 +17,11 @@
 */
 
 public class Network.EtherInterface : Network.AbstractEtherInterface {
-    private Wingpanel.Widgets.Switch ethernet_item;
+    private Network.Widgets.Switch ethernet_item;
 
     public EtherInterface (NM.Client nm_client, NM.Device? _device) {
         device = _device;
-        ethernet_item = new Wingpanel.Widgets.Switch (display_title);
+        ethernet_item = new Network.Widgets.Switch (display_title);
 
         notify["display-title"].connect (() => {
             ethernet_item.caption = display_title;
