@@ -38,7 +38,6 @@ public class Network.Widgets.DisplayWidget : Gtk.Box {
         extra_info_label = new Gtk.Label (null);
         extra_info_label.margin_start = 4;
         extra_info_label.valign = Gtk.Align.CENTER;
-        extra_info_label.vexpand = true;
 
         extra_info_revealer = new Gtk.Revealer ();
         extra_info_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
