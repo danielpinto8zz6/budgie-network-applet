@@ -32,10 +32,23 @@ public class Network.VpnInterface : Network.AbstractVpnInterface {
             }
         });
 
+        vpn_list.set_sort_func(sort_vpnlist);
         vpn_list.add.connect (check_vpn_availability);
         vpn_list.remove.connect (check_vpn_availability);
 
         notify["vpn_state"].connect (update);
+    }
+
+    private int sort_vpnlist(Gtk.ListBoxRow row1, Gtk.ListBoxRow row2) {
+        Network.VpnMenuItem? item1 = (row1 is Network.VpnMenuItem) ? (Network.VpnMenuItem)row1 : null;
+        Network.VpnMenuItem? item2 = (row2 is Network.VpnMenuItem) ? (Network.VpnMenuItem)row2 : null;
+
+        if (item1 == null || item2 == null ||
+            item1.connection == null || item2.connection == null ) {
+            return 0;
+        }
+
+        return item1.id.collate(item2.id);
     }
 
     construct {
