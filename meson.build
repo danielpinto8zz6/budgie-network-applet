@@ -17,6 +17,9 @@ VAPI_DIR = join_paths(meson.source_root(),
 
 
 i18n=import('i18n')
+intltool = find_program('intltool-merge')
+podir = join_paths(meson.source_root(), 'po')
+prefix = get_option('prefix')
 
 lib_install_dir=join_paths(get_option('prefix'), get_option(
     'libdir'), 'budgie-desktop', 'plugins', meson.project_name())
