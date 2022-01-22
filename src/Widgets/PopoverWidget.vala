@@ -116,7 +116,12 @@ public class Network.Widgets.PopoverWidget : Network.Widgets.NMVisualizer {
     }
 
     void show_settings () {
-        var app_info = new DesktopAppInfo("gnome-wifi-panel.desktop");
+        string paneldesktop = "gnome-wifi-panel.desktop";
+        if (Environment.find_program_in_path("budgie-control-center") != null) {
+            paneldesktop = "budgie-wifi-panel.desktop";
+        }
+
+        var app_info = new DesktopAppInfo(paneldesktop);
 
         if (app_info == null) {
             return;
