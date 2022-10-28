@@ -110,6 +110,9 @@ public abstract class Network.Widgets.NMVisualizer : Gtk.Grid {
         } else if (device is NM.DeviceModem) {
             widget_interface = new ModemInterface (nm_client, device);
             debug ("Modem interface added");
+        } else if (device is NM.DeviceBt) {
+            widget_interface = new BluetoothInterface (nm_client, device);
+            debug ("Bluetooth interface added");
         } else {
             debug ("Unknown device: %s\n", device.get_device_type ().to_string ());
         }
